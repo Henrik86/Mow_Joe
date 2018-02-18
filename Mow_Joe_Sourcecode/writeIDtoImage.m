@@ -28,15 +28,30 @@ hold on
   y2= leafletStruct(x).splitPoint2(2);
   visulisePoint(rgbImage,x1,y1,'r');
   visulisePoint(rgbImage,x2,y2,'r');
+  %
+  
   px=graph(leafletStruct(x).cutPoint).coordinate(1);
   py=graph(leafletStruct(x).cutPoint).coordinate(2);
   visulisePoint(rgbImage,px,py,'b');
-  
+  %
+  if(~isempty(leafletStruct(x).branchStartPointCord))
+     pxBranch=leafletStruct(x).branchStartPointCord(1);
+     pyBranch=leafletStruct(x).branchStartPointCord(2);
+     visulisePoint(rgbImage,pxBranch,pyBranch,'g');
+  end
+   %
+  if(~isempty(leafletStruct(x).leafStartPointCord))
+     pxLeaf=leafletStruct(x).leafStartPointCord(1);
+     pyLeaf=leafletStruct(x).leafStartPointCord(2);
+     visulisePoint(rgbImage,pxLeaf,pyLeaf,'g');
+  end
+  %
   if(leafletStruct(x).crossingPoint~=0)
       px=graph(leafletStruct(x).crossingPoint).coordinate(1);
       py=graph(leafletStruct(x).crossingPoint).coordinate(2);
       visulisePoint(rgbImage,px,py,'b');
   end
+  
  end
  
  if(size(boundryImage,2)> graph(bottomPointLabel).coordinate(2)+10)

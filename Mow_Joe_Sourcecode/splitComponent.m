@@ -1,4 +1,4 @@
-function [ bS,minPoint1,minPoint2,leafletImage] = splitComponent(compImage,boundaryImage,skeletonImage,skPoint,binaryImage,indexLeaflet,crossPoint)
+function [ bS,minPoint1,minPoint2,leafletImage] = splitComponent(compImage,boundaryImage,skeletonImage,skPoint,binaryImage,indexLeaflet,crossPoint,sizeWholeLeaf)
 %UNTITLED Splits the connected component at a certain point using the
 %skeleton and the boundary image
 %   Detailed explanation goes here
@@ -58,14 +58,32 @@ if( ~isempty(minPoint2))
     %nIDE=nIDE & ~binaryImage;
     %nID=nID+nIDE;
     'endpoints'
-    
+    %%
+    binaryImageLabeled=bwlabel(binaryImage,4);
+    sA = regionprops(binaryImageLabeled,'Area');
+    allAreas={sA.Area};
+    allAreas=sort([allAreas{:}]);
+    if numel(allAreas)>1
+        size2ndComp=allAreas(end-1);
+    else
+        size2ndComp=allAreas(1);
+    end
+    %%
     binaryImage(logical(nID))=0;
     binaryImageO=binaryImage;
-    if(numel(unique(bwlabel(binaryImage,4)))==2)
+    if(numel(unique(binaryImageLabeled)==2) || size2ndComp<(sizeWholeLeaf/1000))
         for il=1:5
             nID=imdilate(nID,strel('disk',1));
             binaryImage(logical(nID))=0;
-            if(numel(unique(bwlabel(binaryImage)))>2)
+            binaryImageLabeled=bwlabel(binaryImage);
+            if(numel(unique(binaryImageLabeled))>2)
+                sA = regionprops(binaryImageLabeled,'Area');
+                allAreas={sA.Area};
+                allAreas=sort([allAreas{:}]);
+                size2ndComp=allAreas(end-1);
+                if(size2ndComp>(sizeWholeLeaf/1000)) %use a rough threshold here
+                    break;
+                end
                 break;
             end
         end

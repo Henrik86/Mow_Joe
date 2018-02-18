@@ -120,8 +120,8 @@ end
 % saveas(gcf,strcat('/Users/henrikfailmezger/Documents/PHD/SideProjects/Jigsaw_Paper/MowJoe/PlantMethodsRevision/Figures/SplinesBranches/BranchLengths','.png'), 'png')
 % close;
         
-v_cell = cell(1,(numel(crossingPoint)+numel(smallLeafsCrossingPoint)));
-leafletStruct = cell2struct([num2cell([crossingPoint,smallLeafsCrossingPoint])',num2cell([cutArray,smallLeafsCutPoint])',[repmat({'leaflet'},1,numel(cutArray)),repmat({'smallLeaflet'},1,numel(smallLeafsCutPoint))]',[longestPath,longestPathSmallLeafs]',num2cell(branchLen),num2cell(baseToBranch)],{'crossingPoint','cutPoint','class','pathBaseEndpoint','branchLength','baseToBranch'},2);
+v_cell = cell((numel(crossingPoint)+numel(smallLeafsCrossingPoint)),1);
+leafletStruct = cell2struct([num2cell([crossingPoint,smallLeafsCrossingPoint])',num2cell([cutArray,smallLeafsCutPoint])',[repmat({'leaflet'},1,numel(cutArray)),repmat({'smallLeaflet'},1,numel(smallLeafsCutPoint))]',[longestPath,longestPathSmallLeafs]',num2cell(branchLen),num2cell(baseToBranch),v_cell,v_cell,v_cell,v_cell],{'crossingPoint','cutPoint','class','pathBaseEndpoint','branchLength','baseToBranch','branchStartPoint','leafStartPoint','branchStartPointCord','leafStartPointCord'},2);
 
 
 %%

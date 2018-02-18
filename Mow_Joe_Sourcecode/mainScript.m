@@ -13,7 +13,7 @@ function  mainScript( imageStringName,output,lengthBranchToPrune)
         lengthBranchToPrune=25;
     end
     mkdir(strcat(output,filesep,name)); %creates the folder
-    imageFolder=strcat(output,filesep,name,filesep,'images');
+    imageFolder=strcat(output,filesep,name,filesep,'images',filesep);
     imageFolderName=strcat('images',filesep);
     mkdir(imageFolder); %creates the folder
     %
@@ -42,6 +42,7 @@ function  mainScript( imageStringName,output,lengthBranchToPrune)
         imwrite(BW,strcat(output,filesep,name,filesep,imageFolderName,filesep,name,'_Boundary.png'));%else
     %    [ I,imageResize,binaryImage,S1,boundryImage,rgbImage,BW,BW1,imageScale ] = binarization2( imageStringName );
     %end
+    sizeWholeLeaf= numel(find(binaryImage>0));
     ticSegmentation=tic
     se = strel('disk',1);
     binaryImage = imclose(binaryImage,se);
@@ -102,7 +103,7 @@ bottomPointP=graph(1).coordinate;
     ticFeatureCalculation=tic;
     [leafletStruct] = cutCrossRemove(cutArray,graph,crossingPoint,SN,map,longestPath,stemLength); % removes the redundant crossing points!
     [ graph ] = classifierBranch(SNOriginal,graph,map,leafletStruct);
-    [ imgBwLabeled,leafletStruct  ] = colorTheLeaf(graph,binaryImage>0,boundryImage,SNOriginal,map,stemLength,leafletStruct,strcat(output,filesep,name),bottomPointP);%
+    [ imgBwLabeled,leafletStruct  ] = colorTheLeaf(graph,binaryImage>0,boundryImage,SNOriginal,map,stemLength,leafletStruct,strcat(output,filesep,name),bottomPointP,SN,sizeWholeLeaf);%
     [leafletStruct,imageLeaflets,imageRachis,imageBranches ] = areaMeasure(graph,imgBwLabeled,map,imageResize,SN,leafletStruct);
     %%%%%%%%%%%%%%
     
@@ -111,7 +112,7 @@ bottomPointP=graph(1).coordinate;
 %     hold on
 %     plot(bottomPointP(2),bottomPointP(1),'o')
 %     
-     terminalPointP=leafletStruct(1).cutpointCoord;
+    terminalPointP=leafletStruct(1).cutpointCoord;
     terminalPointP=floor(terminalPointP);
     terminalPointP(terminalPointP<1)=1;
     %
@@ -124,14 +125,14 @@ bottomPointP=graph(1).coordinate;
     end
     %%%%%
     leafletOutlines=bwperim(imageLeaflets);
-     leafletOutlines=imdilate(leafletOutlines,strel('disk',2));
+    leafletOutlines=imdilate(leafletOutlines,strel('disk',2));
     imgZ=zeros(size(imageLeaflets));
-     outlineNumber=imgZ(:);
-     outlineNumberO=leafletOutlines(:);
-     imageTerminal=imageLeaflets;
-     imageTerminal(imageTerminal~=leafletStruct(1).leafletIdentifier)=0;
-     imageTerminal=bwperim(imageTerminal);
-     [ midPoint,dlP,drP ] = searchPointsBorder( bwperim(imageTerminal), topPointCoordinates,leafletStruct(1).splitPoint1,leafletStruct(1).splitPoint2, leafletStruct(1).cutpointCoord,strcat(output,filesep,name),rgbImage);
+    outlineNumber=imgZ(:);
+    outlineNumberO=leafletOutlines(:);
+    imageTerminal=imageLeaflets;
+    imageTerminal(imageTerminal~=leafletStruct(1).leafletIdentifier)=0;
+    imageTerminal=bwperim(imageTerminal);
+    [ midPoint,dlP,drP ] = searchPointsBorder( bwperim(imageTerminal), topPointCoordinates,leafletStruct(1).splitPoint1,leafletStruct(1).splitPoint2, leafletStruct(1).cutpointCoord,strcat(output,filesep,name),rgbImage);
     %%%%%%%%%%%%%%
     shapePoints=[ midPoint;dlP;drP ];
 
@@ -279,8 +280,8 @@ bottomPointP=graph(1).coordinate;
     %
     imwrite(label2rgb(imgBwLabeled),strcat(output,filesep,name,filesep,imageFolderName,filesep,name,'_labeled.png'))
     colorsComp=[0,1,0;1,0,0;0,0,1];
-    imgLabeledComp=imageRachis+imageBranches*2+(imageLeaflets>0)*3;
-    imwrite(label2rgb(imgLabeledComp,colorsComp),strcat(output,filesep,name,filesep,imageFolderName,filesep,name,'_labeledN.png'))
+    %imgLabeledComp=imageRachis+imageBranches*2+(imageLeaflets>0)*3;
+    %imwrite(label2rgb(imgLabeledComp,colorsComp),strcat(output,filesep,name,filesep,imageFolderName,filesep,name,'_labeledN.png'))
 %     
 %  
 %      figure('visible','off');

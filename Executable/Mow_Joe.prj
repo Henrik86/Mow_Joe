@@ -1,10 +1,10 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration file="C:\Users\hfailmezger\Documents\Mow-Joe\Executable\Mow_Joe.prj" location="C:\Users\hfailmezger\Documents\Mow-Joe\Executable" name="Mow_Joe" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration file="C:\Users\hfailmezger\Documents\GitHub\Mow_Joe.prj" location="C:\Users\hfailmezger\Documents\GitHub" name="Mow_Joe" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>Mow_Joe</param.appname>
     <param.icon />
     <param.icons />
     <param.version>1.0</param.version>
-    <param.authnamewatermark />
+    <param.authnamewatermark>Henrik Failmezger</param.authnamewatermark>
     <param.email />
     <param.company />
     <param.summary />
@@ -38,7 +38,6 @@
       <param.icon />
       <param.icons />
       <param.version />
-      <param.authnamewatermark />
       <param.email />
       <param.company />
       <param.summary />
@@ -69,15 +68,60 @@
       <param.log.file />
     </unset>
     <fileset.main>
-      <file>C:\Users\hfailmezger\Documents\Mow-Joe\LeafAnalysis_henrikN\gui1.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\gui1.m</file>
     </fileset.main>
     <fileset.resources />
     <fileset.package />
-    <fileset.depfun />
+    <fileset.depfun>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\areaMeasure.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\binarization4.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\binaryFromCluster.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\bottomPoint.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\bridgePixel.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\classifierBranch.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\Classify.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\clusterFinder.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\colorTheLeaf.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\createTable.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\crossPointFinder.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\CStack.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\cutCrossRemove.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\cuttingPointFinder.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\deleteBranches.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\drawLine.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\endPointPathFinder1.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\findLeafTopPoint.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\findPath1.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\folderReadingFunction.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\gui1.fig</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\hsvClusterWithStart.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\ImageFromGraph.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\ImageFromGraphClassification.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\imoverlay.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\interRachisFeature.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\kmeanCluster.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\labeltoLinearInd.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\largestComponent.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\leafletIding.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\leaveFinder2.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\mainScript.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\ncols.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\nrows.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\numberOfNeighbour.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\pruneEndpoints.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\searchPointsBorder.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\skelDetect.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\splitComponent.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\splitComponentBranch.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\topPixel.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\traverseDfs0.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\visulisePoint.m</file>
+      <file>${PROJECT_ROOT}\Mow_Joe\Mow_Joe_Sourcecode\writeIDtoImage.m</file>
+    </fileset.depfun>
     <build-deliverables>
-      <file location="${PROJECT_ROOT}\Mow_Joe\for_testing" name="splash.png" optional="false">C:\Users\hfailmezger\Documents\Mow-Joe\Executable\Mow_Joe\for_testing\splash.png</file>
-      <file location="${PROJECT_ROOT}\Mow_Joe\for_testing" name="readme.txt" optional="true">C:\Users\hfailmezger\Documents\Mow-Joe\Executable\Mow_Joe\for_testing\readme.txt</file>
-      <file location="${PROJECT_ROOT}\Mow_Joe\for_testing" name="Mow_Joe.exe" optional="false">C:\Users\hfailmezger\Documents\Mow-Joe\Executable\Mow_Joe\for_testing\Mow_Joe.exe</file>
+      <file location="${PROJECT_ROOT}\Mow_Joe\for_testing" name="Mow_Joe.exe" optional="false">C:\Users\hfailmezger\Documents\GitHub\Mow_Joe\for_testing\Mow_Joe.exe</file>
+      <file location="${PROJECT_ROOT}\Mow_Joe\for_testing" name="splash.png" optional="false">C:\Users\hfailmezger\Documents\GitHub\Mow_Joe\for_testing\splash.png</file>
+      <file location="${PROJECT_ROOT}\Mow_Joe\for_testing" name="readme.txt" optional="true">C:\Users\hfailmezger\Documents\GitHub\Mow_Joe\for_testing\readme.txt</file>
     </build-deliverables>
     <workflow />
     <matlab>

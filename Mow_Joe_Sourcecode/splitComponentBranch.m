@@ -1,4 +1,4 @@
-function [ bS,minPoint1,minPoint2] = splitComponentBranch(compImage,boundaryImage,skeletonImageBranch,graph,map,skPoint,crosslabel,binaryImage,stemLength,skeletonImage,cutPoint,indexBranch )
+function [ bS,minPoint1,minPoint2] = splitComponentBranch(compImage,boundaryImage,skeletonImageBranch,graph,map,skPoint,crosslabel,binaryImage,stemLength,skeletonImage,cutPoint,indexBranch,sizeWholeLeaf )
 %UNTITLED Splits the connected component at a certain point using the
 %skeleton and the boundary image it also checks the classification of the
 %nearest point to calculate the branching point . so if its is rachis it
@@ -72,8 +72,8 @@ for p=ID'
             skeletonImageTemp(logical(lineImage))=0;
             newComps=bwlabel(skeletonImageTemp);
             if(numel(unique(newComps))>=3)
-                minPoint2=boundaryPoints(p,:);
-                break;
+                    minPoint2=boundaryPoints(p,:);
+                    break;
             end
 
 %             nI=skeletonImage | boundaryImage;
@@ -124,10 +124,10 @@ end
 %%%%%%%%%SPLIT%%%%%%
 nI=skeletonImage | boundaryImage;
 %     figure;
-%     imshow(nI)
-%    hold on
-%     plot(minPoint1(2), minPoint1(1),'ro')
-%     plot(minPoint2(2), minPoint2(1),'go')
+%      imshow(nI)
+%     hold on
+%      plot(minPoint1(2), minPoint1(1),'ro')
+%      plot(minPoint2(2), minPoint2(1),'go')
 if( ~isempty(minPoint2))
     
     nID=drawLine(zeros(size(nI)),minPoint1(1), minPoint1(2), minPoint2(1), minPoint2(2));
@@ -138,14 +138,31 @@ if( ~isempty(minPoint2))
     nED=bwmorph(nID,'endpoints');
     nID=nID & ~(nID&nED);
     binaryImage(logical(nID))=0;
-    
-    if(numel(unique(bwlabel(binaryImage,4)))==2)
+    %%
+    binaryImageLabeled=bwlabel(binaryImage,4);
+    sA = regionprops(binaryImageLabeled,'Area');
+    allAreas={sA.Area};
+    allAreas=sort([allAreas{:}]);
+    if numel(allAreas)>1
+        size2ndComp=allAreas(end-1);
+    else
+        size2ndComp=allAreas(1);
+    end
+    %%
+    if(numel(unique(binaryImageLabeled)==2) || size2ndComp<(sizeWholeLeaf/1000))
         
         for il=1:7
-            nID=imdilate(nID,strel('square',2));
+            nID=imdilate(nID,strel('disk',2));
             binaryImage(logical(nID))=0;
-            if(numel(unique(bwlabel(binaryImage,4)))>2)
-                break;
+            binaryImageLabeled=bwlabel(binaryImage,4);
+            if(numel(unique(binaryImageLabeled))>2)
+                sA = regionprops(binaryImageLabeled,'Area');
+                allAreas={sA.Area};
+                allAreas=sort([allAreas{:}]);
+                size2ndComp=allAreas(end-1);
+                if(size2ndComp>(sizeWholeLeaf/1000)) %use a rough threshold here
+                    break;
+                end
             end
         end
     end
