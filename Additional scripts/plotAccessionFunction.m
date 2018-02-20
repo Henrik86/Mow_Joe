@@ -20,15 +20,15 @@ function [ output_args ] = plotAccessionFunction( accesion1,accesion2,folderPath
   allNames={dataNzAz.imageName};
   nzaz=cellfun(@(x) x(1:2),allNames(cellfun('length',{dataNzAz.imageName}) > 1),'un',0);
   screen_size = get(0, 'ScreenSize');
-  featureNames={'area','Eccentricity','PerimeterLeaflet','branchLength','baseToBranch','interRachis','MinorAxisLength','MajorAxisLength','EquivDiameter'} ; 
+  featureNames={'area','Eccentricity','PerimeterLeaflet','branchLengthCorrected','baseToBranch','interRachis','MinorAxisLength','MajorAxisLength','EquivDiameter'} ; 
   featureDescription={'Area[mm]','Eccentricity','Perimeter[mm]','Branch length[mm]', 'Base to branch distance[mm]','Inter rachis distance[mm]','Minor axis length[mm]','Major axis length[mm]','Equivalence diamter[mm]'};
   %hFig = figure;
-   % set(hFig, 'Position', [0 0 screen_size(3) screen_size(4) ] );
-    color1=[1 0 0];
-    color2=[0 0 1];
-    colorComb=[color1;color2];
+  % set(hFig, 'Position', [0 0 screen_size(3) screen_size(4) ] );
+  color1=[1 0 0];
+  color2=[0 0 1];
+  colorComb=[color1;color2];
     
-    for i=1:numel(featureNames)
+ for i=1:numel(featureNames)
         %subplot(4,4,i)
         figure('visible','off')
         hold on
@@ -37,22 +37,34 @@ function [ output_args ] = plotAccessionFunction( accesion1,accesion2,folderPath
         leafletClass={dataNzAz.class};
         leafletIDClass(ismember(leafletClass,'leaflet'));
         %
-        leafletFeature=cell2mat({dataNzAz.(featureNames{i})});
+        leafletFeature={dataNzAz.(featureNames{i})};
         deleteTerminalLeaflet=0;
-        if(strcmp(featureNames(i),'branchLength') || strcmp(featureNames(i),'interRachis'))
+        if(strcmp(featureNames(i),'branchLengthCorrected') || strcmp(featureNames(i),'branchLength') || strcmp(featureNames(i),'interRachis'))
             deleteTerminalLeaflet=1;
         end
+        %
+        empties = cellfun('isempty',leafletFeature);
+        nanVector=repmat(NaN,numel(find(empties==1)),1);
+        leafletFeature(empties)=num2cell(nanVector);
+        leafletFeature=cell2mat(leafletFeature);
+        %
+        nanFeatures=isnan(leafletFeature);
+        leafletFeature(nanFeatures)=[];
+        nzazN(nanFeatures)=[];
+        leafletIDClass(nanFeatures)=[];
+        leafletClass(nanFeatures)=[];
         %
         leafletFeature(~ismember(leafletClass,'leaflet'))=[];
         nzazN(~ismember(leafletClass,'leaflet'))=[];
         leafletIDClass(~ismember(leafletClass,'leaflet'))=[];
         %
-        
+        leaflet7IDOx=find(cell2mat(leafletIDClass)==7 & strcmp(nzazN,'Ox'));
         lealfelt8ID=find(cell2mat(leafletIDClass)==8);
+        indicesToDelete=[leaflet7IDOx,lealfelt8ID];
         %
-        leafletIDClass(lealfelt8ID)=[];
-        leafletFeature(lealfelt8ID)=[];
-        nzazN(lealfelt8ID)=[];
+        leafletIDClass(indicesToDelete)=[];
+        leafletFeature(indicesToDelete)=[];
+        nzazN(indicesToDelete)=[];
         %
         colorString='rbrbrbrbrbrr';
         if(deleteTerminalLeaflet)
@@ -68,14 +80,19 @@ function [ output_args ] = plotAccessionFunction( accesion1,accesion2,folderPath
         
 
           
-        if(strcmp(featureNames(i),'baseToBranch') ||strcmp(featureNames(i),'EquivDiameter') || strcmp(featureNames(i),'branchLength') || strcmp(featureNames(i),'interRachis')|| strcmp(featureNames(i),'PerimeterLeaflet')||  strcmp(featureNames(i),'MinorAxisLength')|| strcmp(featureNames(i),'MajorAxisLength'))
-           leafletFeature=(leafletFeature*4)*0.0446; 
-        end   
+        if(strcmp(featureNames(i),'baseToBranch') ||strcmp(featureNames(i),'EquivDiameter') || strcmp(featureNames(i),'branchLengthCorrected') || strcmp(featureNames(i),'branchLength') || strcmp(featureNames(i),'interRachis')|| strcmp(featureNames(i),'PerimeterLeaflet')||  strcmp(featureNames(i),'MinorAxisLength')|| strcmp(featureNames(i),'MajorAxisLength'))
+            if(strcmp(featureNames(i),'MajorAxisLength'))
             
-         if(  strcmp(featureNames(i),'area'))
+            end
+           leafletFeature=(leafletFeature*4)*0.0446; 
+        elseif(  strcmp(featureNames(i),'area'))
             leafletFeature=(leafletFeature*4*4)*0.0446*0.0446; 
+        else
+            'Not found'    
         end
+
         boxplot(leafletFeature,{cell2mat(leafletIDClass),nzazN},'colors',colorString,'factorgap',[5 2],'labelverbosity','all','symbol','k+','medianstyle','target');
+
         set(gca,'xtickmode','auto','xticklabelmode','auto')
         set(gca,'xticklabel',[' '])
         h = findobj(gca,'Tag','Box');
@@ -85,32 +102,42 @@ function [ output_args ] = plotAccessionFunction( accesion1,accesion2,folderPath
             colorsDev=[colorComb;colorComb;colorComb;colorComb;color1;color1];
         end
         for j=1:length(h)
-            patch(get(h(j),'XData'),get(h(j),'YData'),colorsDev(length(h)-(j-1),:),'FaceAlpha',1);
+            xData=get(h,'XData');
+            yData=get(h,'YData');
+            p1=patch(xData{j},yData{j},colorsDev(length(h)-(j-1),:),'FaceAlpha',1);
         end
-        boxplot(leafletFeature,{cell2mat(leafletIDClass),nzazN},'colors',colorString,'factorgap',[5 2],'labelverbosity','all','symbol','k+','medianstyle','target');
-
-        set(gca,'xtickmode','auto','xticklabelmode','auto')
+        hold on
+        b2=boxplot(leafletFeature,{cell2mat(leafletIDClass),nzazN},'colors',colorString,'factorgap',[5 2],'labelverbosity','all','symbol','k+','medianstyle','target');
+        l1=plot(1000,1000,'color','red','MarkerSize',10);
+        l2=plot(1000,1000,'color','blue','MarkerSize',10);
+        set(gca,'Xlim',[0,17],'Ylim',[0,600])
+        b2=boxplot(leafletFeature,{cell2mat(leafletIDClass),nzazN},'colors',colorString,'factorgap',[5 2],'labelverbosity','all','symbol','k+','medianstyle','target');
         set(gca,'xticklabel',[' '])
+        set(gca,'xtick',[])
+        
+        
 
-        set(findall(gca, '-property', 'FontSize'), 'FontSize', 20, 'fontWeight', 'normal');
+        %set(findall(gca, '-property', 'FontSize'), 'FontSize', 20, 'fontWeight', 'normal');
         ylabel(featureDescription{i});
-        hLegend = legend(findall(gca,'Tag','Box'), {'Nz','Ox'});
-       
-        hChildren = findall(get(hLegend,'Children'), 'Type','Line');
-
-        set(hChildren(4),'Color',[1 0 0]);
-        set(hChildren(2),'Color',[0 0 1]);
-        set(hChildren(4),'linewidth',3);
-        set(hChildren(2),'linewidth',3);
-        leg = findobj(hChildren,'type','text');
-        set(leg,'FontSize',13);
+        xt = get(gca, 'YTick');
+        set(gca, 'FontSize', 16)
+        h  = legend([l1,l2], 'Nz','Ox');
+        %hChildren = findall(get(hLegend,'Children'), 'Type','Line');
+        %hChildren = get(hLegend,'children')
+        %set(hChildren(4),'Color',[1 0 0]);
+        %set(hChildren(2),'Color',[0 0 1]);
+        %set(hChildren(4),'linewidth',3);
+        %set(hChildren(2),'linewidth',3);
+        %leg = findobj(hChildren,'type','text');
+        %set(leg,'FontSize',13);
         % this will also work on a vector of handles
 
         %set(hChildren(2),'Color',[0 0.5 0])
+        
         saveas(gcf,strcat(strcat(folderPath,filesep,featureNames{i}),'.png'), 'png')
         close;
 
-    end
+  end
     
     %ploting of the whole leaf Features , such as LeafAra and
     %LeafPEriemeter
@@ -127,7 +154,7 @@ screen_size = get(0, 'ScreenSize');
 for  iss=1:numel(featureNames)
     hFig = figure('visible','off');
     hold on;
-    set(hFig, 'Position', [0 0 screen_size(3) screen_size(4) ] );
+    %set(hFig, 'Position', [0 0 screen_size(3) screen_size(4) ] );
     dataToPlot=cell2mat({dataNzAzWhole.(featureNames{iss})});
     if(strcmp(featureNames{iss},'LeafArea'))
         dataToPlot=dataToPlot*4*4*0.0446*0.0446;
@@ -143,10 +170,16 @@ for  iss=1:numel(featureNames)
     boxPositionsDev=get(h,'XData');
     colorsDev=[colorComb;colorComb;colorComb;colorComb;colorComb;color1;color1];
     for j=1:length(h)
-        patch(get(h(j),'XData'),get(h(j),'YData'),colorsDev(length(h)-(j-1),:),'FaceAlpha',1);
+        xData=get(h,'XData');
+        yData=get(h,'YData');
+        patch(xData{j},yData{j},colorsDev(length(h)-(j-1),:),'FaceAlpha',1);
     end
     boxplot(dataToPlot,nzazWhole,'colors','rbrbrbrbrbrr','labelverbosity','all','symbol','k+','medianstyle','target');
     %
+    %l1=plot(1000,1000,'color','red');
+    %l2=plot(1000,1000,'color','blue');
+    
+    
     set(gca,'xtickmode','auto','xticklabelmode','auto')
     set(gca,'xticklabel',[' '])
     set(findall(gca, '-property', 'FontSize'), 'FontSize', 20, 'fontWeight', 'normal');
@@ -154,11 +187,14 @@ for  iss=1:numel(featureNames)
     ylabel(featureDescription{iss});
     xlabel('Accesions');
     hLegend = legend(findall(gca,'Tag','Box'), {'Nz','Ox'});
-    hChildren = findall(get(hLegend,'Children'), 'Type','Line');
+    %hChildren = findall(get(hLegend,'Children'), 'Type','Line');
 
-    set(hChildren(4),'Color',[1 0 0]);
-    set(hChildren(2),'Color',[0 0 1]);
+    %set(hChildren(4),'Color',[1 0 0]);
+    %set(hChildren(2),'Color',[0 0 1]);
     %set(hChildren(2),'Color',[0 0.5 0])
+    width=150;
+    height=400
+    %set(gcf,'units','points','position',[x0,y0,width,height])
     saveas(gcf,strcat(folderPath,filesep,'Leaf_',featureDescription{iss},'.png'));
     close;
 end
